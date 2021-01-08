@@ -448,189 +448,19 @@ class SP extends \SimpleSAML\Auth\Source
             );
         }
 
-        $ar = Module\saml\Message::buildAuthnRequest($this->metadata, $idpMetadata);
-
-        $ar->setAssertionConsumerServiceURL(Module::getModuleURL('saml/sp/saml2-acs.php/' . $this->authId));
+        $assertionConsumerServiceUrl = Module::getModuleURL('saml/sp/saml2-acs.php/' . $this->authId);
+        $scoping = ($this->disable_scoping !== true && $idpMetadata->getBoolean('disable_scoping', false) !== true);
+        $ar = Module\saml\Message::buildAuthnRequest($this->metadata, $idpMetadata, $state, $assertionConsumerServiceUrl, $scoping);
 
         if (isset($state['\SimpleSAML\Auth\Source.ReturnURL'])) {
             $ar->setRelayState($state['\SimpleSAML\Auth\Source.ReturnURL']);
         }
 
-        $accr = null;
-        if ($idpMetadata->getString('AuthnContextClassRef', false)) {
-            $accr = Utils\Arrays::arrayize($idpMetadata->getString('AuthnContextClassRef'));
-        } elseif (isset($state['saml:AuthnContextClassRef'])) {
-            $accr = Utils\Arrays::arrayize($state['saml:AuthnContextClassRef']);
-        }
-
-        if ($accr !== null) {
-            $comp = Constants::COMPARISON_EXACT;
-            if ($idpMetadata->getString('AuthnContextComparison', false)) {
-                $comp = $idpMetadata->getString('AuthnContextComparison');
-            } elseif (
-                isset($state['saml:AuthnContextComparison'])
-                && in_array($state['saml:AuthnContextComparison'], [
-                    Constants::COMPARISON_EXACT,
-                    Constants::COMPARISON_MINIMUM,
-                    Constants::COMPARISON_MAXIMUM,
-                    Constants::COMPARISON_BETTER,
-                ], true)
-            ) {
-                $comp = $state['saml:AuthnContextComparison'];
-            }
-            $ar->setRequestedAuthnContext(['AuthnContextClassRef' => $accr, 'Comparison' => $comp]);
-        }
-
-        if (isset($state['saml:Audience'])) {
-            $ar->setAudiences($state['saml:Audience']);
-        }
-
-        if (isset($state['ForceAuthn'])) {
-            $ar->setForceAuthn((bool) $state['ForceAuthn']);
-        }
-
-        if (isset($state['isPassive'])) {
-            $ar->setIsPassive((bool) $state['isPassive']);
-        }
-
-        if (isset($state['saml:NameID'])) {
-            if (!is_array($state['saml:NameID']) && !is_a($state['saml:NameID'], NameID::class)) {
-                throw new Error\Exception('Invalid value of $state[\'saml:NameID\'].');
-            }
-
-            $nameId = $state['saml:NameID'];
-            if (is_array($nameId)) {
-                // Must be an array > convert to object
-
-                $nid = new NameID();
-                if (!array_key_exists('Value', $nameId)) {
-                    throw new \InvalidArgumentException('Missing "Value" in array, cannot create NameID from it.');
-                }
-
-                $nid->setValue($nameId['Value']);
-                if (array_key_exists('NameQualifier', $nameId) && $nameId['NameQualifier'] !== null) {
-                    $nid->setNameQualifier($nameId['NameQualifier']);
-                }
-                if (array_key_exists('SPNameQualifier', $nameId) && $nameId['SPNameQualifier'] !== null) {
-                    $nid->setSPNameQualifier($nameId['SPNameQualifier']);
-                }
-                if (array_key_exists('SPProvidedID', $nameId) && $nameId['SPProvidedId'] !== null) {
-                    $nid->setSPProvidedID($nameId['SPProvidedID']);
-                }
-                if (array_key_exists('Format', $nameId) && $nameId['Format'] !== null) {
-                    $nid->setFormat($nameId['Format']);
-                }
-            } else {
-                $nid = $nameId;
-            }
-
-            $ar->setNameId($nid);
-        }
-
-        if (isset($state['saml:NameIDPolicy'])) {
-            $policy = null;
-            if (is_string($state['saml:NameIDPolicy'])) {
-                $policy = [
-                    'Format' => (string) $state['saml:NameIDPolicy'],
-                    'AllowCreate' => true,
-                ];
-            } elseif (is_array($state['saml:NameIDPolicy'])) {
-                $policy = $state['saml:NameIDPolicy'];
-            } elseif ($state['saml:NameIDPolicy'] === null) {
-                $policy = ['Format' => Constants::NAMEID_TRANSIENT];
-            }
-            if ($policy !== null) {
-                $ar->setNameIdPolicy($policy);
-            }
-        }
-
-        $IDPList = [];
-        $requesterID = [];
-
-        /* Only check for real info for Scoping element if we are going to send Scoping element */
-        if ($this->disable_scoping !== true && $idpMetadata->getBoolean('disable_scoping', false) !== true) {
-            if (isset($state['saml:IDPList'])) {
-                $IDPList = $state['saml:IDPList'];
-            }
-
-            if (isset($state['saml:ProxyCount']) && $state['saml:ProxyCount'] !== null) {
-                $ar->setProxyCount($state['saml:ProxyCount']);
-            } elseif ($idpMetadata->getInteger('ProxyCount', null) !== null) {
-                $ar->setProxyCount($idpMetadata->getInteger('ProxyCount', null));
-            } elseif ($this->metadata->getInteger('ProxyCount', null) !== null) {
-                $ar->setProxyCount($this->metadata->getInteger('ProxyCount', null));
-            }
-
-            $requesterID = [];
-            if (isset($state['saml:RequesterID'])) {
-                $requesterID = $state['saml:RequesterID'];
-            }
-
-            if (isset($state['core:SP'])) {
-                $requesterID[] = $state['core:SP'];
-            }
-        } else {
-            Logger::debug('Disabling samlp:Scoping for ' . var_export($idpMetadata->getString('entityid'), true));
-        }
-
-        $ar->setIDPList(
-            array_unique(
-                array_merge(
-                    $this->metadata->getArray('IDPList', []),
-                    $idpMetadata->getArray('IDPList', []),
-                    (array) $IDPList
-                )
-            )
-        );
-
-        $ar->setRequesterID($requesterID);
-
-        // If the downstream SP has set extensions then use them.
-        // Otherwise use extensions that might be defined in the local SP (only makes sense in a proxy scenario)
-        if (isset($state['saml:Extensions']) && count($state['saml:Extensions']) > 0) {
-            $ar->setExtensions($state['saml:Extensions']);
-        } elseif ($this->metadata->getArray('saml:Extensions', null) !== null) {
-            $ar->setExtensions($this->metadata->getArray('saml:Extensions'));
-        }
-
-        $providerName = $this->metadata->getString("ProviderName", null);
-        if ($providerName !== null) {
-            $ar->setProviderName($providerName);
-        }
-
-
-        // save IdP entity ID as part of the state
-        $state['ExpectedIssuer'] = $idpMetadata->getString('entityid');
-
-        $id = Auth\State::saveState($state, 'saml:sp:sso', true);
-        $ar->setId($id);
-
         Logger::debug(
             'Sending SAML 2 AuthnRequest to ' . var_export($idpMetadata->getString('entityid'), true)
         );
 
-        // Select appropriate SSO endpoint
-        if ($ar->getProtocolBinding() === Constants::BINDING_HOK_SSO) {
-            /** @var array $dst */
-            $dst = $idpMetadata->getDefaultEndpoint(
-                'SingleSignOnService',
-                [
-                    Constants::BINDING_HOK_SSO
-                ]
-            );
-        } else {
-            /** @var array $dst */
-            $dst = $idpMetadata->getEndpointPrioritizedByBinding(
-                'SingleSignOnService',
-                [
-                    Constants::BINDING_HTTP_REDIRECT,
-                    Constants::BINDING_HTTP_POST,
-                ]
-            );
-        }
-        $ar->setDestination($dst['Location']);
-
-        $b = Binding::getBinding($dst['Binding']);
+        $b = Binding::getBinding($ar->getProtocolBinding());
 
         $this->sendSAML2AuthnRequest($state, $b, $ar);
 
