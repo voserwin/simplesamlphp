@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SimpleSAML;
 
-use SAML2\XML\saml\AttributeValue;
 use Serializable;
 use SimpleSAML\Assert\Assert;
 use SimpleSAML\Error;
+use SimpleSAML\SAML2\XML\saml\AttributeValue;
 use SimpleSAML\Utils;
 
 /**
