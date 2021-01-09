@@ -32,7 +32,6 @@ class RedisTest extends TestCase
 
 
     /**
-     * @return void
      */
     protected function setUp(): void
     {
@@ -80,7 +79,6 @@ class RedisTest extends TestCase
     /**
      * @param string $key
      * @param mixed $value
-     * @return void
      */
     public function setMocked(string $key, $value): void
     {
@@ -92,7 +90,6 @@ class RedisTest extends TestCase
      * @param string $key
      * @param int $expire
      * @param mixed $value
-     * @return void
      */
     public function setexMocked(string $key, int $expire, $value): void
     {
@@ -103,7 +100,6 @@ class RedisTest extends TestCase
 
     /**
      * @param string $key
-     * @return void
      */
     public function delMocked(string $key): void
     {
@@ -113,7 +109,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testRedisInstance(): void
     {
@@ -134,7 +129,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testRedisInstanceWithPassword(): void
     {
@@ -156,7 +150,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testInsertData(): void
     {
@@ -172,7 +165,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testInsertExpiringData(): void
     {
@@ -188,7 +180,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testGetEmptyData(): void
     {
@@ -200,7 +191,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testOverwriteData(): void
     {
@@ -218,7 +208,6 @@ class RedisTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function testDeleteData(): void
     {
@@ -233,7 +222,6 @@ class RedisTest extends TestCase
     /**
      * @param \SimpleSAML\Configuration|\SimpleSAML\Store $service
      * @param class-string $className
-     * @return void
      */
     protected function clearInstance($service, string $className): void
     {

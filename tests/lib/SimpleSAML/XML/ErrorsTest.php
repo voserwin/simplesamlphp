@@ -16,14 +16,12 @@ use SimpleSAML\XML\Errors;
  *
  * @covers \SimpleSAML\XML\Errors
  *
- * @author Sergio Gómez <sergio@uco.es>
  * @package simplesamlphp/simplesamlphp
  */
 class ErrorsTest extends TestCase
 {
     /**
      * @test
-     * @return void
      */
     public function loggingErrors(): void
     {
@@ -42,7 +40,6 @@ class ErrorsTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
     public function formatErrors(): void
     {

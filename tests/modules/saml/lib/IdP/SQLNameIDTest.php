@@ -16,14 +16,12 @@ use SimpleSAML\Store;
  *
  * @covers \SimpleSAML\Module\saml\IdP\SQLNameID
  *
- * @author Pavel Brousek <brousek@ics.muni.cz>
  * @package SimpleSAMLphp
  */
 class SQLNameIDTest extends TestCase
 {
     /**
      * @param array $config
-     * @return void
      */
     private function addGetDelete(array $config = []): void
     {
@@ -37,7 +35,6 @@ class SQLNameIDTest extends TestCase
     /**
      * Test Store.
      * @test
-     * @return void
      */
     public function testSQLStore(): void
     {
@@ -58,7 +55,6 @@ class SQLNameIDTest extends TestCase
     /**
      * Test incompatible Store.
      * @test
-     * @return void
      */
     public function testIncompatibleStore(): void
     {
@@ -80,7 +76,6 @@ class SQLNameIDTest extends TestCase
     /**
      * Test Database.
      * @test
-     * @return void
      */
     public function testDatabase(): void
     {
@@ -105,7 +100,6 @@ class SQLNameIDTest extends TestCase
     /**
      * @param \SimpleSAML\Configuration|\SimpleSAML\Store $service
      * @param class-string $className
-     * @return void
      */
     protected function clearInstance($service, string $className): void
     {

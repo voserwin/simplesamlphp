@@ -23,8 +23,6 @@ use SimpleSAML\Utils;
  * that is not serializable, make sure to convert it first to a representation that can be
  * serialized.
  *
- * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
- * @author Jaime Pérez Crespo, UNINETT AS <jaime.perez@uninett.no>
  * @package SimpleSAMLphp
  */
 
@@ -192,7 +190,6 @@ class Session implements Serializable, Utils\ClearableState
      * Set the configuration we should use.
      *
      * @param Configuration $config
-     * @return void
      */
     public function setConfiguration(Configuration $config): void
     {
@@ -220,7 +217,6 @@ class Session implements Serializable, Utils\ClearableState
      * be serializable in its original form (e.g.: DOM objects).
      *
      * @param string $serialized The serialized representation of a session that we want to restore.
-     * @return void
      *
      * Cannot typehint param as string due to upstream restrictions
      */
@@ -415,7 +411,6 @@ class Session implements Serializable, Utils\ClearableState
      * Create a session that should not be saved at the end of the request.
      * Subsequent calls to getInstance() will return this transient session.
      *
-     * @return void
      */
     public static function useTransientSession(): void
     {
@@ -432,7 +427,6 @@ class Session implements Serializable, Utils\ClearableState
      * Create a new session and cache it.
      *
      * @param string $sessionId The new session we should create.
-     * @return void
      */
     public static function createSession(string $sessionId): void
     {
@@ -448,7 +442,6 @@ class Session implements Serializable, Utils\ClearableState
      * WARNING: please do not use this method directly unless you really need to and know what you are doing. Use
      * markDirty() instead.
      *
-     * @return void
      */
     public function save(): void
     {
@@ -483,7 +476,6 @@ class Session implements Serializable, Utils\ClearableState
      * Use this method if you are using PHP sessions in your application *and* in SimpleSAMLphp, *after* you are done
      * using SimpleSAMLphp and before trying to access your application's session again.
      *
-     * @return void
      */
     public function cleanup(): void
     {
@@ -500,7 +492,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * This method will register a callback to save the session right before any output is sent to the browser.
      *
-     * @return void
      */
     public function markDirty(): void
     {
@@ -579,7 +570,6 @@ class Session implements Serializable, Utils\ClearableState
      * Set remember me expire time.
      *
      * @param int $lifetime Number of seconds after when remember me session cookies expire.
-     * @return void
      */
     public function setRememberMeExpire(int $lifetime = null): void
     {
@@ -600,7 +590,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * @param string     $authority The authority the user logged in with.
      * @param array      $data The authentication data for this authority.
-     * @return void
      *
      * @throws Error\CannotSetCookie If the authentication token cannot be set for some reason.
      */
@@ -693,7 +682,6 @@ class Session implements Serializable, Utils\ClearableState
      * This function will call any registered logout handlers before marking the user as logged out.
      *
      * @param string $authority The authentication source we are logging out of.
-     * @return void
      */
     public function doLogout(string $authority): void
     {
@@ -720,7 +708,6 @@ class Session implements Serializable, Utils\ClearableState
      * This function calls all registered logout handlers.
      *
      * @param string $authority The authentication source we are logging out from.
-     * @return void
      *
      * @throws \Exception If the handler is not a valid function or method.
      */
@@ -785,7 +772,6 @@ class Session implements Serializable, Utils\ClearableState
      * Update session cookies.
      *
      * @param array $params The parameters for the cookies.
-     * @return void
      */
     public function updateSessionCookies(array $params = []): void
     {
@@ -813,7 +799,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * @param string $authority The authentication source we are setting expire time for.
      * @param int    $expire The number of seconds authentication source is valid.
-     * @return void
      */
     public function setAuthorityExpire(string $authority, int $expire = null): void
     {
@@ -833,7 +818,6 @@ class Session implements Serializable, Utils\ClearableState
      * @param string $authority The authority for which register the handler.
      * @param string $classname The class which contains the logout handler.
      * @param string $functionname The logout handler function.
-     * @return void
      *
      * @throws \Exception If the handler is not a valid function or method.
      */
@@ -862,7 +846,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * @param string $type The type of the data.
      * @param string $id The identifier of the data.
-     * @return void
      */
     public function deleteData(string $type, string $id): void
     {
@@ -887,7 +870,6 @@ class Session implements Serializable, Utils\ClearableState
      * @param int|string|null $timeout The number of seconds this data should be stored after its last access.
      * This parameter is optional. The default value is set in 'session.datastore.timeout',
      * and the default is 4 hours.
-     * @return void
      *
      * @throws \Exception If the data couldn't be stored.
      *
@@ -934,7 +916,6 @@ class Session implements Serializable, Utils\ClearableState
     /**
      * This function removes expired data from the data store.
      *
-     * @return void
      */
     private function expireData(): void
     {
@@ -1051,7 +1032,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * @param string $idp The IdP id.
      * @param array  $association The association we should add.
-     * @return void
      */
     public function addAssociation(string $idp, array $association): void
     {
@@ -1113,7 +1093,6 @@ class Session implements Serializable, Utils\ClearableState
      *
      * @param string $idp The IdP id.
      * @param string $associationId The id of the association.
-     * @return void
      */
     public function terminateAssociation(string $idp, string $associationId): void
     {
@@ -1168,7 +1147,6 @@ class Session implements Serializable, Utils\ClearableState
 
     /**
      * Clear any configuration information cached
-     * @return void
      */
     public static function clearInternalState(): void
     {

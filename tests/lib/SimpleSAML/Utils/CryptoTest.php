@@ -74,7 +74,6 @@ pfajpJ9ZzdyLIo6dVjdQtl+S1rpFCx7ziVN8tCCX4fAVCqRqZJaG/UMLvguVqayb
 PHP;
 
     /**
-     * @return void
      */
     public function setUp(): void
     {
@@ -104,7 +103,6 @@ PHP;
      * Test that aesDecrypt() works properly, being able to decrypt some previously known (and correct)
      * ciphertext.
      *
-     * @return void
      */
     public function testAesDecrypt(): void
     {
@@ -167,7 +165,6 @@ CIPHER;
     /**
      * Test that aesEncrypt() produces ciphertexts that aesDecrypt() can decrypt.
      *
-     * @return void
      */
     public function testAesEncrypt(): void
     {
@@ -187,7 +184,6 @@ CIPHER;
     /**
      * Test that the pem2der() and der2pem() methods work correctly.
      *
-     * @return void
      */
     public function testFormatConversion(): void
     {
@@ -218,7 +214,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testGoodPwValid(): void
     {
@@ -232,7 +227,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testBadPwInvalid(): void
     {
@@ -247,7 +241,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testSecureCompareEqual(): void
     {
@@ -258,7 +251,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testSecureCompareNotEqual(): void
     {
@@ -269,7 +261,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyRequiredMetadataMissing(): void
     {
@@ -282,7 +273,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyNotRequiredMetadataMissing(): void
     {
@@ -296,7 +286,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyMissingFile(): void
     {
@@ -308,7 +297,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyBasic(): void
     {
@@ -327,7 +315,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyPassword(): void
     {
@@ -353,7 +340,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPrivateKeyPrefix(): void
     {
@@ -380,7 +366,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPublicKeyRequiredMetadataMissing(): void
     {
@@ -393,7 +378,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPublicKeyNotRequiredMetadataMissing(): void
     {
@@ -407,7 +391,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPublicKeyNotX509Certificate(): void
     {
@@ -431,7 +414,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPublicKeyNotSigning(): void
     {
@@ -455,7 +437,6 @@ CIPHER;
 
 
     /**
-     * @return void
      */
     public function testLoadPublicKeyBasic(): void
     {

@@ -6,16 +6,15 @@ use Symfony\Component\VarExporter\VarExporter;
 
 use SAML2\Constants;
 use SimpleSAML\Assert\Assert;
+use SimpleSAML\Configuration;
+use SimpleSAML\Error;
 use SimpleSAML\Module;
 use SimpleSAML\Utils;
 use SimpleSAML\Utils\Config\Metadata as Metadata;
 
-// load SimpleSAMLphp configuration and metadata
-$config = \SimpleSAML\Configuration::getInstance();
-$metadata = \SimpleSAML\Metadata\MetaDataStorageHandler::getMetadataHandler();
-
-if (!$config->getBoolean('enable.saml20-idp', false)) {
-    throw new \SimpleSAML\Error\Error('NOACCESS');
+$config = Configuration::getInstance();
+if (!$config->getBoolean('enable.saml20-idp', false) || !Module::isModuleEnabled('saml')) {
+    throw new Error\Error('NOACCESS', null, 403);
 }
 
 // check if valid local session exists
@@ -23,6 +22,8 @@ if ($config->getBoolean('admin.protectmetadata', false)) {
     $authUtils = new Utils\Auth();
     $authUtils->requireAdmin();
 }
+
+$metadata = \SimpleSAML\Metadata\MetaDataStorageHandler::getMetadataHandler();
 
 try {
     $idpentityid = isset($_GET['idpentityid']) ?
@@ -151,7 +152,7 @@ try {
         );
 
         if (!$idpmeta->hasValue('OrganizationURL')) {
-            throw new \SimpleSAML\Error\Exception(
+            throw new Error\Exception(
                 'If OrganizationName is set, OrganizationURL must also be set.'
             );
         }
@@ -246,5 +247,5 @@ try {
         exit(0);
     }
 } catch (\Exception $exception) {
-    throw new \SimpleSAML\Error\Error('METADATA', $exception);
+    throw new Error\Error('METADATA', $exception);
 }

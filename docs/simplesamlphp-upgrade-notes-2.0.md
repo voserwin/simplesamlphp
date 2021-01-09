@@ -28,3 +28,5 @@ Upgrade notes for SimpleSAMLphp 2.0
   // New style
   $arrayUtils = new \SimpleSAML\Utils\Arrays();
   $x = $arrayUtils->arrayize($someVar);
+- The default encryption algorithm is set from AES128_CBC to AES128_GCM. If you're upgrading from an existing implementation, you may want
+    to manually switch back the `sharedkey_algorithm`. Note that CBC is vulnerable to the Padding oracle attack.
